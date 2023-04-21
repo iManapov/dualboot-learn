@@ -19,17 +19,23 @@ class Task(models.Model):
     description = models.CharField(max_length=1000, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    deadline = models.DateField()
+    deadline = models.DateField(null=True)
     state = models.CharField(max_length=255, default=States.NEW, choices=States.choices)
     priority = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)]
+        null=True, validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
     tag = models.ManyToManyField(Tag)
     assignee = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="assignee"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="assignee",
+        null=True,
     )
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="author"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="author",
+        null=True,
     )
 
     def __str__(self):
