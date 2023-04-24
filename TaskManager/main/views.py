@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 import django_filters
 from main.serializers import UserSerializer, TaskSerializer, TagSerializer
 from main.models import User, Task, Tag
@@ -10,7 +10,10 @@ class UserFilter(django_filters.FilterSet):
 
     class Meta:
         model = User
-        fields = ('username', 'email',)
+        fields = (
+            "username",
+            "email",
+        )
 
 
 class TagFilter(django_filters.FilterSet):
@@ -18,7 +21,7 @@ class TagFilter(django_filters.FilterSet):
 
     class Meta:
         model = Tag
-        fields = ('title',)
+        fields = ("title",)
 
 
 class TaskFilter(django_filters.FilterSet):
@@ -27,22 +30,42 @@ class TaskFilter(django_filters.FilterSet):
 
     class Meta:
         model = Task
-        fields = ('state', 'priority', 'assignee__username', 'author__username', 'tag__title')
+        fields = (
+            "state",
+            "priority",
+            "assignee__username",
+            "author__username",
+            "tag__title",
+        )
+
+
+class IsStuff(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == "DELETE":
+            return request.user.is_staff
+        return True
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsStuff, permissions.IsAuthenticated]
     queryset = User.objects.order_by("id")
     serializer_class = UserSerializer
     filterset_class = UserFilter
 
 
 class TagViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsStuff, permissions.IsAuthenticated]
     queryset = Tag.objects.order_by("id")
     serializer_class = TagSerializer
     filterset_class = TagFilter
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.select_related('assignee', 'author').prefetch_related('tag').order_by("id")
+    permission_classes = [IsStuff, permissions.IsAuthenticated]
+    queryset = (
+        Task.objects.select_related("assignee", "author")
+        .prefetch_related("tag")
+        .order_by("id")
+    )
     serializer_class = TaskSerializer
     filterset_class = TaskFilter
