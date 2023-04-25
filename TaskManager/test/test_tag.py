@@ -3,12 +3,6 @@ from base import TestViewSetBase
 
 class TestTagViewSet(TestViewSetBase):
     basename = "tags"
-    admin_attributes = {
-        "username": "johnsmith",
-        "first_name": "John",
-        "last_name": "Smith",
-        "email": "john@test.com",
-    }
 
     test_tag_info = {"title": "Test tag title"}
 
