@@ -15,9 +15,9 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    assignee = UserSerializer()
-    author = UserSerializer()
-    tag = TagSerializer(many=True)
+    assignee = UserSerializer(required=False)
+    author = UserSerializer(required=False)
+    tag = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Task
