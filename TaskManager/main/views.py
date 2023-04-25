@@ -39,7 +39,7 @@ class TaskFilter(django_filters.FilterSet):
         )
 
 
-class IsStuff(permissions.BasePermission):
+class IsStaff(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == "DELETE":
             return request.user.is_staff
@@ -47,21 +47,21 @@ class IsStuff(permissions.BasePermission):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsStuff, permissions.IsAuthenticated]
+    permission_classes = [IsStaff, permissions.IsAuthenticated]
     queryset = User.objects.order_by("id")
     serializer_class = UserSerializer
     filterset_class = UserFilter
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsStuff, permissions.IsAuthenticated]
+    permission_classes = [IsStaff, permissions.IsAuthenticated]
     queryset = Tag.objects.order_by("id")
     serializer_class = TagSerializer
     filterset_class = TagFilter
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsStuff, permissions.IsAuthenticated]
+    permission_classes = [IsStaff, permissions.IsAuthenticated]
     queryset = (
         Task.objects.select_related("assignee", "author")
         .prefetch_related("tag")
