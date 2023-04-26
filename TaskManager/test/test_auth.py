@@ -5,8 +5,8 @@ from datetime import timedelta
 from django.urls import reverse
 
 
-class TestTagViewSet(TestViewSetBase):
-    basename = "tags"
+class TestAuthViewSet(TestViewSetBase):
+    any_api_url = reverse("tags-list")
 
     def test_successful_auth(self):
         response = self.token_request()
@@ -26,13 +26,13 @@ class TestTagViewSet(TestViewSetBase):
 
     def test_token_auth(self) -> None:
         client = self.client_class()
-        response = client.get(reverse(f"{self.basename}-list"))
+        response = client.get(self.any_api_url)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
         response = self.token_request()
         token = response.json()["access"]
         client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
-        response = client.get(reverse(f"{self.basename}-list"))
+        response = client.get(self.any_api_url)
         assert response.status_code == status.HTTP_200_OK
 
     def test_refresh_lives_lower_than_one_day(self) -> None:
