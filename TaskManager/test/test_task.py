@@ -3,12 +3,6 @@ from base import TestViewSetBase
 
 class TestTaskViewSet(TestViewSetBase):
     basename = "tasks"
-    admin_attributes = {
-        "username": "johnsmith",
-        "first_name": "John",
-        "last_name": "Smith",
-        "email": "john@test.com",
-    }
 
     test_task_info = {
         "title": "Test task title",

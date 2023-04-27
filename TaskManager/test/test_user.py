@@ -1,14 +1,8 @@
-from base import TestViewSetBase
+from base import TestViewSetBase, UserFactory
 
 
 class TestUserViewSet(TestViewSetBase):
     basename = "users"
-    admin_attributes = {
-        "username": "johnsmith",
-        "first_name": "John",
-        "last_name": "Smith",
-        "email": "john@test.com",
-    }
 
     test_user_info = {
         "username": "johntest",
@@ -23,12 +17,13 @@ class TestUserViewSet(TestViewSetBase):
         assert user == expected_response
 
     def test_list(self):
-        self.create(self.test_user_info)
+        another_user = self.create_user()
         users = self.list()
         assert len(users) == 2
-        for user in users:
-            user.pop("id")
-        assert users == [self.admin_attributes, self.test_user_info]
+        assert [user["username"] for user in users] == [
+            self.user.username,
+            another_user.username,
+        ]
 
     def test_retrieve(self):
         user = self.create(self.test_user_info)
